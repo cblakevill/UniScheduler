@@ -1,0 +1,20 @@
+ **************************************************************************
+ * Program: UniScheduler
+ * Author: Christopher Villegas
+ * Student ID: 18359884 
+ * Unit: OOPD 
+ **************************************************************************
+
+CLASS: UniScheduler
+
+MAIN   
+   exitMenu := false
+   WHILE NOT exitMenu DO
+      TRY
+         exitMenu = Menu.mainMenu <-- None
+      CATCH ArrayOutOfBounds e
+         OUTPUT "Schedule already has 10 items"
+      CATCH InputMismatch e
+         OUTPUT "invalid character detected"
+      END TRY
+   END WHILE

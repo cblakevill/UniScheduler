@@ -1,0 +1,81 @@
+CLASS: TutorialEvent INHERITS FROM: UniEvents (Abstract Class), 
+                                    ISchedule (Interface)
+
+CLASS FIELDS: classroom (integer)
+
+CONSTRUCTORS:
+
+Default:
+IMPORT: None
+ALGORITHM:
+   super <-- None
+   classroom := 1
+
+Alternate:
+IMPORT: inUnit (string)
+        inClassroom, inDay, inMonth, inYear, inHour, inMinute (integers)
+ALGORITHM:
+   super <-- inUnit, inMinute, inHour, inDay, inMonth, inYear
+   IF inClassroom >= 1 AND <= 400 THEN
+      classroom := inClassroom
+   ELSE
+      THROW IllegalArgument <-- "Classroom must be between 1 and 400"
+   END IF
+
+Copy:
+IMPORT: inTutorial (TutorialEvent object)
+ALGORITHM:
+   super <-- inTutorial
+   classroom := inTutorial.getClassroom <-- None
+
+MUTATORS:
+
+SUBMODULE: setClassroom
+IMPORT: inClassroom (integer)
+EXPORT: None
+ALGORITHM:
+   IF inClassroom >= 1 AND <= 400 THEN
+      classroom := inClassroom
+   ELSE
+      THROW IllegalArgument <-- "Classroom must be between 1 and 400"
+   END IF
+
+ACCESSORS:
+
+SUBMODULE: getClassroom
+IMPORT: None
+EXPORT: classroom
+
+SUUBMODULE: equals
+IMPORT: inObject (Object object)
+EXPORT: isEqual (boolean)
+ASSERTION: two TutorialEvent objects are equal if they have the same 
+           unit, date/time and classroom
+           Overrides equals method in UniEvents
+ALGORITHM:
+   isEqual := false
+   IF inObject is a TutorialEvent THEN
+      make inObject to a TutorialEvent named inTutorial
+      IF super.equals <-- inTutorial THEN
+         IF classroom = inTutorial.getClassroom <-- None THEN
+            isEqual := true
+   END IF
+
+SUBMODULE: toString
+IMPORT: None
+EXPORT: outString (string)
+ALGORITHM:
+   eventDateTemp := (super.getDateTime <-- None).getTime <-- None
+   eventTime := eventDateTemp.toString <-- None
+   outString := "Tutorial for "+ super.getUnit <-- None + " in classroom " + 
+                classroom + " on " + eventTime
+
+SUBMODULE: printAlert
+IMPORT: None
+EXPORT: outString (string)
+ALGORITHM: 
+   timeRemaining := super.timeTilEvent <-- None
+   outString := "You have a tutorial in " + classroom + " for " + 
+               super.getUnit <-- None + " in " + timeRemaining
+
+

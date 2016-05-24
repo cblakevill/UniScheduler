@@ -1,0 +1,35 @@
+CLASS: ScheduleList
+
+CLASS FIELDS: eventCounter (integer) initial value := -1, 
+              eventArray [ARRAY OF ISchedule objects] (size 10)
+
+SUBMODULE: addEvent
+IMPORT: inEventItem (ISchedule object)
+EXPORT: None
+ALGORITHM:
+   eventCounter = eventCounter + 1
+   eventArray[eventCounter] = inEventItem
+
+SUBMODULE: displayEvents
+IMPORT: None
+EXPORT: None
+ALGORITHM:
+   IF eventCounter = -1
+      OUTPUT "No events to display"
+   ELSE
+      FOR i := 0 TO eventCounter CHANGE BY 1
+         OUTPUT eventArray[i].toString <-- None
+      END FOR
+   END IF
+
+SUBMODULE: printAlert
+IMPORT: None
+EXPORT: None
+ALGORITHM:
+   IF eventCounter = -1
+      OUTPUT "No events to display"
+   ELSE
+      FOR i := 0 TO eventCounter CHANGE BY 1
+         OUTPUT eventArray[i].printAlert <-- None
+      END FOR
+   END IF

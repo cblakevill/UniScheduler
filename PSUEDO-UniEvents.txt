@@ -1,0 +1,134 @@
+ABSTRACT CLASS: UniEvents
+
+CLASS FIELDS: unit (string), dateTimeEvent (GregorianCalendar object)
+
+CONSTRUCTORS:
+
+Default:
+IMPORT: None
+ALGORITHM:
+   unit := ""
+   CONSTRUCT dateTimeEvent USING default 
+
+Alternate:
+IMPORT: inUnit (string), 
+        inDay, inMonth, inYear, inHour, inMinute (integers)
+ALGORITHM:
+   CONSTRUCT dateTimeTemp USING inYear, inMonth, inDay, inHour, inMinute
+   IF validateTime <-- dateTimeTemp = false THEN
+      THROW IllegalArgument <-- "Date cannot be set in the past"
+   END IF
+   IF inUnit = null THEN
+      THROW IllegalArgument <-- "invalid unit"
+   END IF
+   unit := String <-- inUnit
+   dateTimeEvent := dateTimeTemp
+      
+Copy:
+IMPORT: inEvent (UniEvents object)
+ALGORITHM:
+   unit := inEvent.getUnit <-- None
+   dateTimeEvent := inEvent.getDateTime <-- None
+
+MUTATORS:
+
+SUBMODULE: setUnit
+IMPORT: inUnit
+Export: None
+ALGORITHM: 
+   IF inUnit = null THEN
+      THOW IllegalArgument <-- "invalid unit"
+   END IF
+   unit := String <-- inUnit
+
+SUBMODULE: setDateTime
+IMPORT: inDateTime (GregorianCalendar object)
+EXPORT: None
+ALGORITHM:
+   IF validateTime <-- inDateTime = false THEN
+      THROW IllegalArgument <-- "Date cannot be set in the past"
+   END IF
+   dateTimeEvent := copy of inDateTime
+
+ACCESSORS:
+
+SUBMODULE: getUnit
+IMPORT: None
+EXPORT: copy of unit
+
+SUBMODULE: getDateTIme
+IMPORT: None
+EXPORT: copy of dateTimeEvent
+
+SUBMODULE: equals
+IMPORT: inObject (Object object)
+EXPORT: isEqual (boolean)
+ASSERTION: equal if unit and date/time are the same
+ALGORITHM:
+   isEqual := false
+   IF inObject is a UniEvents object
+      make inObject to a UniEvents object named inEvent
+      IF (unit = inEvent.getUnit <-- None) AND
+         (dateTimeEvent.equals <-- (inEvent.getDateTime <-- None)) THEN
+            isEqual := true
+      END IF
+   END IF
+
+PROTECTED SUBMODULE: timeTilEvent
+IMPORT: None
+EXPORT: outString
+ASSERTION: -calculates time until an event begins using epoch time
+           -used to generate part of the printAlert string in child classes
+ALGORITHM:
+   currentTemp = current epoch time in milliseconds
+   eventTemp = dateTimeEvent.getTimeInMillis <-- None
+   currentMinutes = currentTemp DIV 60000
+   eventMinutes = eventTemp DIV 60000
+   timeRemaining = eventMinutes - currentMinutes
+   outString = convertTime <-- timeRemaining
+
+PRIVATE:
+
+SUBMODULE: validateTime
+IMPORT: inTime (GregorianCalendar object)
+EXPORT: isValid (boolean)
+ASSERTION determines if time inputted is greater than current time if not null
+ALGORITHM:
+   isValid := false
+   IF inTime = null THEN
+      THROW IllegalArgument <-- "invalid date"
+   END IF
+   currentTime := current epoch time in milliseconds
+   eventTime := inTime.getTimeInMillis <-- None   
+   IF eventTime > currentTime THEN
+      isValid := true
+   END IF
+
+SUBMODULE: convertTIme
+IMPORT: timeRemaining (integer)
+EXPORT: outString (string)
+ASSERTION: converts time remaining (in minutes) to a string
+ALGORITHM:
+   outString = ""
+   days = timeRemaining DIV (60 x 24)
+   hours = (timeRemaining MOD (60 x 24)) DIV 60
+   minutes = timeRemaining - (days x (60 x 24)) - (hours x 60)
+   IF days NOT EQUALS 0 THEN
+      outString = outString + days + " days, "
+   END IF
+   IF hours NOT EQUALS 0 THEN
+      outString = outString + hours + " hours, "
+   END IF
+   outString = outString + minutes + " minutes"
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,80 @@
+CLASS: LectureEvent INHERITS FROM: UniEvents (Abstract Class), 
+                                   ISchedule (Interface)
+
+CLASS FIELDS: lectureHall (string)
+
+CONSTRUCTORS:
+
+Default:
+IMPORT: None
+ALGORITHM:
+   super <-- None
+   lectureHall := "" 
+
+Alternate:
+IMPORT: inUnit, inLectureHall (strings), 
+        inDay, inMonth, inYear, inHour, inMinute (integers)
+ALGORITHM:
+   super <-- inUnit, inMinute, inHour, inDay, inMonth, inYear
+   IF inLectureHall = null THEN
+      THROW IllegalArguement <-- "invalid lecturehall"
+   END IF
+   lectureHall := inLectureHall
+      
+Copy:
+IMPORT: inLectureEvent (LectureEvent object)
+ALGORITHM:
+   super <-- inLectureEvent
+   lectureHall := inLectureEvent.getLectureHall <-- None
+
+Mutators:
+
+SUBMODULE: setLectureHall
+IMPORT: inLectureHall (string)
+EXPORT: None
+ALGORITHM:
+   IF inLectureHall = null THEN
+      THROW IllegalArguement <-- "invalid lecturehall"
+   END IF
+   lectureHall := String <-- inLectureHall   
+
+Accessors:
+
+SUBMODULE: getLectureHall
+IMPORT: None
+EXPORT: copy of lectureHall
+
+SUBMODULE: equals
+IMPORT: inObject (Object object)
+EXPORT: isEqual (boolean)
+ASSERTION: two LectureEvent objects are equal if they have the same 
+           unit, date/time and lecturehall
+           Overrides equals method in UniEvents
+ALGORITHM:
+   isEqual := false
+   IF inObject is a LectureEvent 
+      make inObject to a LectureEvent named inLecture
+      IF super.equals <-- inLecture THEN
+         IF lectureHall = inLecture.getLectureHall <-- None THEN
+            isEqual := true
+   END IF
+   
+SUBMODULE: toString
+IMPORT: None
+EXPORT: outString (string)
+ALGORITHM:
+   eventDateTemp := (super.getDateTime <-- None).getTime <-- None
+   eventTime := eventDateTemp.toString <-- None
+   outString := "Lecture for " + super.getUnit <-- None + " in lecture hall " +
+                lectureHall + " on " + eventTime
+
+SUBMODULE: printAlert
+IMPORT: None
+EXPORT: outString (string)
+ALGORITHM: 
+   timeRemaining := super.timeTilEvent <-- None
+   outString := "You have a lecture in " + lectureHall + " for " + 
+                 super.getUnit <-- None + " in " + timeRemaining
+
+
+
